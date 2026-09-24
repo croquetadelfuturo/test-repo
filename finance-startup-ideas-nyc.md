@@ -33,13 +33,15 @@
 - **Offsets:** customer-level **FICC–CME cross-margining** with futures.
 - **Which bank:** each has its own capacity, fees, margin add-ons and legal terms.
 
-Legal and contract negotiation is delaying 88% of the programs that are running late (ValueExchange/Broadridge survey of 340 firms, June 2026). SIFMA only published its standard done-away agreement in July 2026.
+In the ValueExchange/Broadridge survey of 340 firms (June 2026), **88% of delayed programs cite legal and contract negotiation** as a cause. **88% of delayed buy-side programs cite legal and account documentation**, and **44% call contract negotiation "very challenging."** Overall, 86% of firms are at least somewhat confident they'll be ready, so this is a pain point in the paperwork, not a market in panic. SIFMA only published its standard done-away agreement in July 2026.
 
 **The product, in order of value.**
 1. **All-in cost-of-clearing model (the most valuable part).** It combines clearinghouse margin, bank add-ons, collateral haircuts, the firm's actual funding and opportunity cost, clearing and sponsor fees, operations, lost netting and cross-margin benefits. It then simulates every viable route: clearinghouse × bank × access model × collateral mix. Example output: *"Moving these positions from setup A to setup B frees $74M of liquidity and cuts estimated annual cost by $1.8M."* The value is in comparing across clearinghouses, banks and commercial terms. Rebuilding one clearinghouse's math adds nothing, since CME already offers its own tools and API.
 2. **Normalizing bank relationships.** AI reads each bank's clearing agreement, schedule, pricing, margin method, eligible collateral, credit and termination terms, and service levels. It turns them into a machine-readable record so offers from different banks can be compared directly.
 3. **Rule engine for what must be cleared.** A deterministic engine with an AI interface on top, rather than "the AI decides." It follows trade → entity and counterparty type → rule → exemption → result → citations → audit record. A compliance officer can click **Why?** and see the exact rule, SEC FAQ, facts and logic.
-4. **Later: an RFP network, not a marketplace.** A fund sends a standardized clearing profile to eligible banks, gets back comparable terms, models them, picks one and starts onboarding. Don't match counterparties or take fees linked to transactions, because that creates broker-dealer registration risk.
+4. **Later: an RFP workflow, not a marketplace.** A fund sends a standardized clearing profile to eligible banks, gets back comparable terms, models them, picks one and starts onboarding. This is *lower risk, not a safe harbor.* The SEC treats soliciting or negotiating deals, facilitating transactions and pay linked to transactions as signs of broker activity, and government securities and repo have their own registration framework. Keep pricing as fixed SaaS fees, never negotiate or route the actual transactions, and **get securities counsel to review this before the architecture is locked in.**
+
+**First test, before writing meaningful software: find one fund that will pay.** The offer: *"Give us your last 30 days of Treasury, repo and futures positions, your current clearing relationships and the relevant agreements. For $50k, we'll project your clearing economics after June 2027, find alternative setups and put a number on the savings."* If no one pays $50k for that in Sept–Oct 2026, that's valuable negative information. If three funds pay, you probably have the start of the company.
 
 **Wedge.** A **"post-mandate clearing bill"** priced at **$50–100k**, built from 30–90 days of a fund's Treasury, repo and futures positions. It covers what's in scope, the available routes, margin for each setup, cross-margin effects, bank relationships needed, operational gaps and estimated annual cost. People fill in what the software can't do yet. Do 10 of these, find where the money actually is, and use the data to build the platform.
 
@@ -56,22 +58,25 @@ Legal and contract negotiation is delaying 88% of the programs that are running 
 
 About 60–80 customers across these tiers, averaging about $450k, gives about $30–35M of revenue and about $20M of profit. That's roughly half the large hedge-fund market plus asset managers, so it's ambitious.
 
-**Moat.** Data on **what clearing actually costs a given type of client through a given bank**. The flywheel works like this: funds upload portfolios and bank terms, ClearPath models costs, the funds put their business out to several banks, and ClearPath learns real pricing. No clearinghouse calculator has that data.
+**Moat: data customers contribute, not cooperation from banks.** Customers bring their clearing agreements, actual margin calls, portfolios and bank quotes. ClearPath turns these into comparable economics and optimizes on top of them. Over time this builds the data no clearinghouse calculator has: **what clearing actually costs a given type of client through a given bank.** ClearPath doesn't need JPMorgan to disclose JPMorgan's terms, because the fund already holds the agreement, the quote and the margin statement. The hard part becomes **data rights**. Every customer contract has to explicitly allow ClearPath to derive anonymized benchmark data. Otherwise the dataset can't legally be pooled across clients.
 
 **Team.** One former repo or clearing person from a dealer or FICC, one quant who can model margin and funding, and one AI/infrastructure engineer.
 
-**Competition.** Stronger than it first looks:
-- **Trading Technologies/OpenGamma** is the biggest threat. It covers margin across many clearinghouses and already understands FICC–CME cross-margining.
+**Competition.** Stronger than it first looks, and it comes at two layers:
+- **Trading Technologies/OpenGamma threatens the quantitative engine.** It covers margin across many clearinghouses, understands FICC–CME cross-margining and already sells to hedge funds and banks.
+- **Bowtie threatens the contract-normalization engine.** Bowtie ([trybowtie.com](https://www.trybowtie.com/)) is "enterprise AI for asset managers" that audits prime-broker margin calls against the exact legal terms, with clause-level traceability. The other LLM also said Bowtie normalizes terms across prime brokers, has funds managing $100B+ as clients and talks publicly about repo clearing. I couldn't verify those claims because the site was blocked, so check them before relying on them. **Investigate Bowtie in depth before going further.**
 - **S&P Global CLM Pro/Outreach360** handles onboarding outreach.
 - **Broadridge**, the **clearinghouses themselves**, **banks** and **consultants** each cover pieces.
 
-No one owns the whole chain from scope → access model → clearinghouse → bank → legal terms → margin → total cost → onboarding.
+No one owns the whole **Treasury-specific** decision: what must be cleared → access model → clearinghouse → bank's commercial terms → portfolio economics → onboarding and readiness. **That integrated decision has to be the wedge.** Otherwise ClearPath ends up as an accidental offspring of OpenGamma and Bowtie while both parents are alive and competing.
 
 **Risks.**
-- **Banks may resist being compared.** They price clearing together with prime-brokerage relationships. The mitigation is that the fund supplies the terms it has received, so the model doesn't depend on banks cooperating.
+- **Banks may resist being compared.** They price clearing together with prime-brokerage relationships. The mitigation is the data model above: customers supply the terms, so ClearPath doesn't need banks to cooperate.
+- **Bowtie adds Treasury clearing economics, or Trading Technologies/OpenGamma adds contract normalization.**
+- **Broker-dealer registration** if the RFP workflow drifts into negotiating or routing trades.
 - **Trading Technologies/OpenGamma adds normalized bank terms.** Speed matters, because the window closes around the repo deadline.
 - **Access to FICC margin models**, which are less open than CME's.
-- **The top-end market is small.** Reaching $20M needs expansion beyond large hedge funds.
+- **The top-end market is small.** Large hedge funds are the beachhead, not the whole market. Reaching $20M requires expanding to asset managers, mutual funds, money-market funds and other cash providers.
 
 ---
 
@@ -136,6 +141,8 @@ No one owns the whole chain from scope → access model → clearinghouse → ba
 - [S&P Global: US Treasury clearing mandate (Feb 2026)](https://www.spglobal.com/market-intelligence/en/news-insights/research/2026/02/us-treasury-clearing-mandate)
 - [Marex: CME–FICC cross margining](https://www.marex.com/news/2026/01/cme-ficc-cross-margining-a-turning-point-for-u-s-rates-markets-and-market-participants)
 - [ICE Clear Credit Treasury clearing live (Feb 2026)](https://ir.theice.com/press/news-details/2026/ICE-Clear-Credits-Treasury-Clearing-Service-Receives-SEC-Approval-and-is-Now-Operationally-Live/default.aspx)
+- [Bowtie](https://www.trybowtie.com/)
+- [OFR: Hedge fund participation in cleared repo (Mar 2026)](https://www.financialresearch.gov/briefs/2026/03/03/hedge-fund-participation-cleared-repo/)
 - [ValueExchange/Broadridge Treasury clearing survey (June 2026)](https://www.prnewswire.com/news-releases/us-treasury-central-clearing-survey-broad-industry-readiness-for-cash-clearing-industry-moving-towards-execution-but-work-remains-ahead-of-repo-deadline-302885767.html)
 - [SIFMA done-away clearing agreement (July 2026)](https://www.sifma.org/news/press-releases/sifma-publishes-u-s-treasury-done-away-securities-clearing-agreement)
 - [SEC: Uyeda remarks, Sept 22, 2026](https://www.sec.gov/newsroom/speeches-statements/uyeda-remarks-2026-u-s-treasury-market-conference-092226)
