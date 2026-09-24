@@ -28,12 +28,13 @@
 **What it answers:** Where should this portfolio be cleared, through which bank, under what structure, and what will it cost in total?
 
 **Why now.** Under the SEC's mandate, eligible secondary-market Treasury **cash trades must be centrally cleared by Dec 31, 2026**, and **repo trades by June 30, 2027**. Commissioner Uyeda signaled on Sept 22, 2026 that there won't be another extension, though some interpretive and exemption questions are still open. Firms now face several real choices at once:
-- **Which clearinghouse:** **FICC**, **ICE Clear Credit** (live since Feb 2026, with repo planned for Q4 2026) or **CME Securities Clearing** (launching Dec 7, 2026).
-- **Which access model at FICC:** Sponsored, Sponsored GC, Agent Clearing, done-with or done-away.
+- **Which clearinghouse:** **FICC**, **ICE Clear Credit** (cash live since Feb 2026; repo *planned* for Q4 2026) or **CME Securities Clearing** (launch *planned* for Dec 7, 2026, pending regulatory approval).
+- **Which access model at FICC:** Sponsored, Sponsored GC or Agent Clearing. Separately, done-with or done-away execution. The real open question is whether sponsors will clear done-away trades, and at what fee.
+- **Current state:** by OFR data, about 62% of mandate-targeted repo was centrally cleared in Q1 2026, down from 72% at the end of 2025. Much of the market is already partly cleared, so the migration is well underway but not finished.
 - **Offsets:** customer-level **FICC–CME cross-margining** with futures.
 - **Which bank:** each has its own capacity, fees, margin add-ons and legal terms.
 
-In the ValueExchange/Broadridge survey of 340 firms (June 2026), **88% of delayed programs cite legal and contract negotiation** as a cause. **88% of delayed buy-side programs cite legal and account documentation**, and **44% call contract negotiation "very challenging."** Overall, 86% of firms are at least somewhat confident they'll be ready, so this is a pain point in the paperwork, not a market in panic. SIFMA only published its standard done-away agreement in July 2026.
+In the June 2026 Pulse Survey of 340 firms (SIFMA, BNY, Broadridge and DTCC with The ValueExchange), **88% of delayed programs cite legal and contract or account documentation** as a cause, and **44% call contract negotiation "very challenging."** Overall, 86% of firms are at least somewhat confident they'll be ready, so this is a pain point in the paperwork, not a market in panic. SIFMA only published its standard done-away agreement in July 2026.
 
 **The product, in order of value.**
 1. **All-in cost-of-clearing model (the most valuable part).** It combines clearinghouse margin, bank add-ons, collateral haircuts, the firm's actual funding and opportunity cost, clearing and sponsor fees, operations, lost netting and cross-margin benefits. It then simulates every viable route: clearinghouse × bank × access model × collateral mix. Example output: *"Moving these positions from setup A to setup B frees $74M of liquidity and cuts estimated annual cost by $1.8M."* The value is in comparing across clearinghouses, banks and commercial terms. Rebuilding one clearinghouse's math adds nothing, since CME already offers its own tools and API.
@@ -75,7 +76,7 @@ No one owns the whole **Treasury-specific** decision: what must be cleared → a
 - **Bowtie adds Treasury clearing economics, or Trading Technologies/OpenGamma adds contract normalization.**
 - **Broker-dealer registration** if the RFP workflow drifts into negotiating or routing trades.
 - **Trading Technologies/OpenGamma adds normalized bank terms.** Speed matters, because the window closes around the repo deadline.
-- **Access to FICC margin models**, which are less open than CME's.
+- **Commoditized margin math.** FICC's VaR calculator is public, including repo and FICC–CME cross-margining (since 2024), and CME has CORE. The value that isn't public is each sponsor's add-ons, minimums, credit charges and spreads.
 - **The top-end market is small.** Large hedge funds are the beachhead, not the whole market. Reaching $20M requires expanding to asset managers, mutual funds, money-market funds and other cash providers.
 
 ---
@@ -142,6 +143,8 @@ No one owns the whole **Treasury-specific** decision: what must be cleared → a
 - [Marex: CME–FICC cross margining](https://www.marex.com/news/2026/01/cme-ficc-cross-margining-a-turning-point-for-u-s-rates-markets-and-market-participants)
 - [ICE Clear Credit Treasury clearing live (Feb 2026)](https://ir.theice.com/press/news-details/2026/ICE-Clear-Credits-Treasury-Clearing-Service-Receives-SEC-Approval-and-is-Now-Operationally-Live/default.aspx)
 - [Bowtie](https://www.trybowtie.com/)
+- [OFR: Repo clearing plateaued in Q1 2026](https://www.financialresearch.gov/the-ofr-blog/2026/08/20/central-clearing-treasury-repos-plateaued/)
+- [DTCC: public FICC VaR calculator with repo and cross-margin](https://www.dtcc.com/news/2024/november/13/dtccs-ficc-enhances-var-calculator-capabilities)
 - [OFR: Hedge fund participation in cleared repo (Mar 2026)](https://www.financialresearch.gov/briefs/2026/03/03/hedge-fund-participation-cleared-repo/)
 - [ValueExchange/Broadridge Treasury clearing survey (June 2026)](https://www.prnewswire.com/news-releases/us-treasury-central-clearing-survey-broad-industry-readiness-for-cash-clearing-industry-moving-towards-execution-but-work-remains-ahead-of-repo-deadline-302885767.html)
 - [SIFMA done-away clearing agreement (July 2026)](https://www.sifma.org/news/press-releases/sifma-publishes-u-s-treasury-done-away-securities-clearing-agreement)
