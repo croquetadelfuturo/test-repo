@@ -21,25 +21,57 @@
 
 ---
 
-## 1. ClearPath: a neutral buy-side layer for the Treasury clearing mandate
+## 1. ClearPath: an independent optimizer for where and how to clear Treasuries
 
-**The problem.** Under the SEC's mandate, eligible secondary-market Treasury **cash trades must be centrally cleared by Dec 31, 2026**, and **repo trades by June 30, 2027**. **CME Securities Clearing launches Dec 7, 2026**. That gives buy-side firms a real choice between clearinghouses (FICC or CME) for the first time. They also have to choose an access model: sponsored, agent clearing, done-with or done-away. On top of that come FICC–CME cross-margining and several sponsoring dealers, each with its own capacity, haircuts and fees. Sponsor capacity and onboarding backlogs are already a known bottleneck. The only analytics available today come from single dealers, who have a conflict of interest, or from single clearinghouses, which only show their own house. OpenGamma, now owned by Trading Technologies, is built for derivatives margin, not for choosing Treasury clearing access.
+*Revised after an outside review. It's positioned as a capital-optimization and routing layer, not a compliance tool. The mandate gets you in the door in 2026–27, but optimization is what keeps customers paying after that.*
 
-**The product.** A vendor-neutral decision and workflow layer:
-- **Eligibility engine (AI):** labels every trade and counterparty as in scope, exempt or hybrid under the rule, with an audit trail.
-- **Margin and cost optimizer:** replicates each clearinghouse's margin method and runs what-ifs across FICC vs. CME, cross-margin with futures, and each sponsor's pricing.
-- **Onboarding agent (AI):** reads each sponsor's agreements and term sheets, compares economics, and runs the document and KYC checklists in parallel across 3–5 sponsors.
-- **Later:** anonymized data on sponsor capacity and pricing turns into a **marketplace for done-away access**. That network effect is the moat.
+**What it answers:** Where should this portfolio be cleared, through which bank, under what structure, and what will it cost in total?
 
-**Customers.** Hedge funds running basis and relative-value trades, asset managers, pension funds, insurers and smaller broker-dealers. That's several hundred firms, and most of them are based in Manhattan.
+**Why now.** Under the SEC's mandate, eligible secondary-market Treasury **cash trades must be centrally cleared by Dec 31, 2026**, and **repo trades by June 30, 2027**. Commissioner Uyeda signaled on Sept 22, 2026 that there won't be another extension, though some interpretive and exemption questions are still open. Firms now face several real choices at once:
+- **Which clearinghouse:** **FICC**, **ICE Clear Credit** (live since Feb 2026, with repo planned for Q4 2026) or **CME Securities Clearing** (launching Dec 7, 2026).
+- **Which access model at FICC:** Sponsored, Sponsored GC, Agent Clearing, done-with or done-away.
+- **Offsets:** customer-level **FICC–CME cross-margining** with futures.
+- **Which bank:** each has its own capacity, fees, margin add-ons and legal terms.
 
-**Path to $20M profit.** If initial margin costs about 4% to fund, every $100M of margin saved is worth about $4M a year to a fund.
-- Charge $300k–$1.5M a year per firm, or 10–20% of documented savings.
-- **50 clients × about $700k = about $35M of revenue.** At about 60–65% margin, that's about $20M+ of profit.
+Legal and contract negotiation is delaying 88% of the programs that are running late (ValueExchange/Broadridge survey of 340 firms, June 2026). SIFMA only published its standard done-away agreement in July 2026.
 
-**Team.** One former repo or clearing person from a dealer or FICC, one quant who can replicate margin models, and one AI/infrastructure engineer.
+**The product, in order of value.**
+1. **All-in cost-of-clearing model (the most valuable part).** It combines clearinghouse margin, bank add-ons, collateral haircuts, the firm's actual funding and opportunity cost, clearing and sponsor fees, operations, lost netting and cross-margin benefits. It then simulates every viable route: clearinghouse × bank × access model × collateral mix. Example output: *"Moving these positions from setup A to setup B frees $74M of liquidity and cuts estimated annual cost by $1.8M."* The value is in comparing across clearinghouses, banks and commercial terms. Rebuilding one clearinghouse's math adds nothing, since CME already offers its own tools and API.
+2. **Normalizing bank relationships.** AI reads each bank's clearing agreement, schedule, pricing, margin method, eligible collateral, credit and termination terms, and service levels. It turns them into a machine-readable record so offers from different banks can be compared directly.
+3. **Rule engine for what must be cleared.** A deterministic engine with an AI interface on top, rather than "the AI decides." It follows trade → entity and counterparty type → rule → exemption → result → citations → audit record. A compliance officer can click **Why?** and see the exact rule, SEC FAQ, facts and logic.
+4. **Later: an RFP network, not a marketplace.** A fund sends a standardized clearing profile to eligible banks, gets back comparable terms, models them, picks one and starts onboarding. Don't match counterparties or take fees linked to transactions, because that creates broker-dealer registration risk.
 
-**Risks.** The mandate slips again. Trading Technologies/OpenGamma or a clearinghouse builds the same thing. Sales cycles at large funds are long. You can reduce these risks by selling the eligibility engine first, since everyone needs it by Dec 31.
+**Wedge.** A **"post-mandate clearing bill"** priced at **$50–100k**, built from 30–90 days of a fund's Treasury, repo and futures positions. It covers what's in scope, the available routes, margin for each setup, cross-margin effects, bank relationships needed, operational gaps and estimated annual cost. People fill in what the software can't do yet. Do 10 of these, find where the money actually is, and use the data to build the platform.
+
+**First customers.** **Large hedge funds with big Treasury repo books plus CME Treasury futures books**: relative-value, macro and multi-strategy funds. The June 30, 2027 repo deadline is their real pressure point. Expand afterward to asset managers, money-market funds, pensions and insurers.
+
+**Pricing and path to $20M profit.** Pricing is a base platform fee plus 5–10% of independently verified first-year savings, never tied to individual securities transactions. Realistic annual contract sizes:
+
+| Customer | Annual value |
+|---|---|
+| Smaller manager | $100–250k |
+| Large asset manager | $250–500k |
+| Large hedge fund | $400k–$1M+ |
+| Largest multi-strategy funds and dealer-scale users | $1M+ |
+
+About 60–80 customers across these tiers, averaging about $450k, gives about $30–35M of revenue and about $20M of profit. That's roughly half the large hedge-fund market plus asset managers, so it's ambitious.
+
+**Moat.** Data on **what clearing actually costs a given type of client through a given bank**. The flywheel works like this: funds upload portfolios and bank terms, ClearPath models costs, the funds put their business out to several banks, and ClearPath learns real pricing. No clearinghouse calculator has that data.
+
+**Team.** One former repo or clearing person from a dealer or FICC, one quant who can model margin and funding, and one AI/infrastructure engineer.
+
+**Competition.** Stronger than it first looks:
+- **Trading Technologies/OpenGamma** is the biggest threat. It covers margin across many clearinghouses and already understands FICC–CME cross-margining.
+- **S&P Global CLM Pro/Outreach360** handles onboarding outreach.
+- **Broadridge**, the **clearinghouses themselves**, **banks** and **consultants** each cover pieces.
+
+No one owns the whole chain from scope → access model → clearinghouse → bank → legal terms → margin → total cost → onboarding.
+
+**Risks.**
+- **Banks may resist being compared.** They price clearing together with prime-brokerage relationships. The mitigation is that the fund supplies the terms it has received, so the model doesn't depend on banks cooperating.
+- **Trading Technologies/OpenGamma adds normalized bank terms.** Speed matters, because the window closes around the repo deadline.
+- **Access to FICC margin models**, which are less open than CME's.
+- **The top-end market is small.** Reaching $20M needs expansion beyond large hedge funds.
 
 ---
 
@@ -96,13 +128,17 @@
 
 ## Recommendation
 
-**Start with #1 (ClearPath).** It has the hardest deadline (Dec 31, 2026 for cash, June 30, 2027 for repo), the highest willingness to pay, and it fits NYC best. #2 has the strongest moat once it works, but it needs a credible former SVO or rating-agency analyst on the team. #3 has the biggest social impact and the largest scale, but it has the most risk from government and incumbents.
+**Start with #1 (ClearPath)**, beginning with the paid "post-mandate clearing bill" for large repo-plus-futures hedge funds. It has the hardest deadline (the repo deadline of June 30, 2027 is the real one), the highest willingness to pay, and it fits NYC best. #2 has the strongest moat once it works, but it needs a credible former SVO or rating-agency analyst on the team. #3 has the biggest social impact and the largest scale, but it has the most risk from government and incumbents.
 
 ## Sources
 - [CME Securities Clearing launching Dec 7, 2026](https://www.cmegroup.com/media-room/press-releases/2026/9/10/cme_group_to_launchcmesecuritiesclearingondecember7toexpandclear.html)
 - [State Street: Treasury clearing mandate FAQs](https://www.statestreet.com/br/en/insights/central-clearing-mandate-faqs)
 - [S&P Global: US Treasury clearing mandate (Feb 2026)](https://www.spglobal.com/market-intelligence/en/news-insights/research/2026/02/us-treasury-clearing-mandate)
 - [Marex: CME–FICC cross margining](https://www.marex.com/news/2026/01/cme-ficc-cross-margining-a-turning-point-for-u-s-rates-markets-and-market-participants)
+- [ICE Clear Credit Treasury clearing live (Feb 2026)](https://ir.theice.com/press/news-details/2026/ICE-Clear-Credits-Treasury-Clearing-Service-Receives-SEC-Approval-and-is-Now-Operationally-Live/default.aspx)
+- [ValueExchange/Broadridge Treasury clearing survey (June 2026)](https://www.prnewswire.com/news-releases/us-treasury-central-clearing-survey-broad-industry-readiness-for-cash-clearing-industry-moving-towards-execution-but-work-remains-ahead-of-repo-deadline-302885767.html)
+- [SIFMA done-away clearing agreement (July 2026)](https://www.sifma.org/news/press-releases/sifma-publishes-u-s-treasury-done-away-securities-clearing-agreement)
+- [SEC: Uyeda remarks, Sept 22, 2026](https://www.sec.gov/newsroom/speeches-statements/uyeda-remarks-2026-u-s-treasury-market-conference-092226)
 - [Trading Technologies acquires OpenGamma](https://financefeeds.com/trading-technologies-buys-opengamma-to-bring-margin-analytics-into-the-front-office/)
 - [Sidley: NAIC Spring 2026 National Meeting](https://datamatters.sidley.com/2026/04/14/regulatory-update-national-association-of-insurance-commissioners-spring-2026-national-meeting/)
 - [Beinsure: NAIC private rating review](https://beinsure.com/news/naic-private-rating-review-may-pressure-us-insurers/)
