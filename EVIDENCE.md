@@ -35,7 +35,7 @@ This is the research that [PROPOSAL.md](PROPOSAL.md) rests on. Each entry gives 
 
 | Finding | Source | Design consequence |
 |---|---|---|
-| ChatGPT reduced brainstorming diversity in 37 of 45 comparisons. | Meincke, Nave, Terwiesch 2025, *Nature Human Behaviour* 9:1107 | Founders write their own ideas *before* seeing any AI output. |
+| ChatGPT reduced brainstorming diversity in 37 of 45 comparisons. | Meincke, Nave, Terwiesch 2025, *Nature Human Behaviour* 9:1107 | If founders add ideas of their own, they jot them down before browsing the AI's seeds. |
 | LLM help improved performance only while it was available. Ideas stayed homogenized even after it was removed. | Kumar et al., CHI 2025, arXiv:2410.03703 | Same as above. |
 | "Cognitive surrender": when the AI was wrong, people followed it ~4 in 5 times and scored 15 points *below* the no-AI baseline, yet their confidence rose. | Shaw & Nave 2026, SSRN 6097646 | Form your own judgment first, then compare with the AI's. |
 | AI users scored 17% lower on a later skills quiz, with no significant speedup. Usage patterns that kept people engaged preserved learning. | Shen & Tamkin (Anthropic) 2026, arXiv:2601.20245 | The three of you should stay the ones doing the thinking. |

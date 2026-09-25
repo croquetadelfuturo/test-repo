@@ -5,7 +5,7 @@
 ## TL;DR
 
 - **The LLM handles breadth. The three of you handle judgment. Real customers give the verdict.** The system never produces a score or a go/no-go. It produces varied ideas, a short list of the assumptions each idea depends on, and the cheapest real-world test for each one.
-- **It has four steps and one log:** Seed → Spray → Sort → Test, plus an evidence ledger. That's about five prompts, a folder of markdown files, and a few hundred lines of script.
+- **It has four steps and one log:** Seed → Spray → Sort → Test, plus an evidence ledger. That's about seven prompts, a folder of markdown files, and a few hundred lines of script.
 - **Your judgment and the AI's stay separate until the end.** You form yours before seeing its. The AI ranks independently, and you compare the two instead of blending them. This is the single most evidence-backed rule here.
 - **Anything added to the system has to earn its place.** Each component states the model weakness it covers and a check that shows whether that weakness still exists. When the check stops finding problems, the component is deleted.
 
@@ -38,9 +38,9 @@ The fix isn't better gates. Point the system at the outside world: customers, pr
 ```
   ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐
   │  SEED    │ →  │  SPRAY   │ →  │  SORT    │ →  │  TEST    │
-  │ (humans) │    │  (LLM)   │    │ (humans  │    │ (world)  │
-  │          │    │          │    │  + LLM,  │    │          │
-  │          │    │          │    │ separate)│    │          │
+  │ (humans, │    │  (LLM)   │    │ (humans  │    │ (world)  │
+  │  LLM and │    │          │    │  + LLM,  │    │          │
+  │   web)   │    │          │    │ separate)│    │          │
   └──────────┘    └──────────┘    └──────────┘    └──────────┘
         ↑                                              │
         └──────────────  evidence ledger  ←────────────┘
@@ -56,9 +56,25 @@ One page per person, plus one shared page:
 
 This is the most useful input the generator gets, because it's the part a generic LLM can't make up.
 
-### Step 1: SEED (the three of you, no AI)
+### Step 1: SEED (three independent sources)
 
-Each of you privately writes 5–15 ideas, including the ones you already have. **Do this before you see any AI output.** When people see AI ideas first, they converge on them and stay converged even after the AI is removed. Your existing ideas go in here and are then treated exactly like the generated ones.
+Seeds come from three sources. They are generated in parallel, and none of them sees the others' output, so no source can anchor another:
+
+1. **Your ideas.** The ideas you already want to stress-test, plus anything else you think of. There's no quota.
+2. **The AI, from your profiles.** One call reads the founder profiles and proposes seeds that exploit the skills, access and unfair advantages you described. This covers what you're well placed to do but haven't thought of. It reuses the generate prompt with your profiles as the direction, so it adds no new prompt.
+3. **The AI, from the world.** A web-research pass looks for evidence of pain that people already spend money or time on. Sources to search:
+   - 1–2 star reviews of existing products;
+   - forum and Reddit threads where people describe workarounds;
+   - job postings that pay people to do repetitive manual work;
+   - recent regulation changes;
+   - business models that work in another country or industry and haven't been ported;
+   - things that recently became cheap or possible.
+
+   Every seed carries the URL it came from, and the script checks that the links resolve. This is the source humans can't easily produce, because it takes reading hundreds of pages. It also starts each idea from observed demand rather than from what sounds clever.
+
+All three sources go into the same pool and are treated identically from here on.
+
+The only guardrail: if any of you want to add ideas of your own, jot them down *before* browsing the AI's seeds. People who see AI ideas first converge on them, and stay converged even after the AI is removed. It's a five-minute habit, not a gate.
 
 ### Step 2: SPRAY (LLM, about 20 minutes of compute)
 
@@ -72,7 +88,7 @@ Goal: a large, genuinely varied pool of ideas, then deduplicated down to 50–15
    - "differ from what others would say".
 
    The research shows these simple moves together beat human diversity.
-3. **Remix your seeds.** Run the same mechanism on your own ideas: variations, other customer groups, the same idea with a different business model.
+3. **Remix the seeds.** Run the same mechanism on every seed, from all three sources: variations, other customer groups, the same idea with a different business model.
 4. **Use at least two model vendors.** It's a cheap hedge, not a guarantee. Different vendors' models are more alike than you'd expect.
 5. **Deduplicate and measure.** Embed every idea, merge near-duplicates, and report two numbers: pool diversity (mean pairwise distance) and a saturation curve. **Stop when a new batch adds almost nothing new.**
 6. **Normalize every idea to one plain card template.** Same fields, same length, no adjectives, and no indication of whether a founder or the AI wrote it:
@@ -154,7 +170,7 @@ The ledger is also how the system learns. When you run Spray again, it reads the
 
 These rules are the actual defense against bloat. Put them in the repo README.
 
-1. **Complexity budget.** At most 6 prompts. Each output has a fixed length limit (card ≤ 80 words, brief ≤ 1 page). If you add a prompt, remove one or explain in writing why you can't.
+1. **Complexity budget.** At most 7 prompts. Each output has a fixed length limit (card ≤ 80 words, brief ≤ 1 page). If you add a prompt, remove one or explain in writing why you can't.
 2. **Every component carries its reason.** Each prompt file opens with one line: *"Exists because: [model weakness]. Check: [how we'd know it's no longer needed]."* If you can't write that line, the component doesn't go in.
 3. **Add things only after a failure you saw in real use.** Not because it "might help", and not because an LLM suggested it. A change has to show it altered a real decision.
 4. **Never ask an LLM "how can we make this more rigorous?"** Ask "what can we delete?" The first question always produces more process.
@@ -174,7 +190,7 @@ These replace trusting papers that test older models. There are three checks, an
 ideas/
   README.md          ← the five rules above
   founders/          ← profile pages
-  prompts/           ← plan.md, generate.md, card.md, rank.md, research.md, skeptic.md
+  prompts/           ← seed-world.md, plan.md, generate.md, card.md, rank.md, research.md, skeptic.md
   pool/              ← generated + seed cards (one JSONL file per run)
   ideas/<slug>.md    ← brief + evidence ledger per shortlisted idea
   run.py             ← ~300 lines: spray, dedupe, rank, brief, check-links, calibrate
@@ -189,7 +205,7 @@ ideas/
 
 | Week | What happens |
 |---|---|
-| 1 | Write your founder profiles, then seed ideas privately. Build `run.py` spray and dedupe. Run the calibration checks. |
+| 1 | Write your founder profiles and list the ideas you already have. Run the AI seeding from your profiles and from web research. Build `run.py` spray and dedupe. Run the calibration checks. |
 | 2 | Spray, then Sort to 3–5 ideas. Hold one discussion meeting, run on the disagreement map. |
 | 3 | Research and skeptic briefs. Write kill criteria. Book 10–20 customer conversations per idea. |
 | 4 | Run the tests. Update the ledger. Decide what to kill and what gets a second round of tests. Re-spray with what you learned. |
@@ -208,6 +224,9 @@ If by week 4 you've spent more time on the tool than on customer conversations, 
 ## Appendix: the prompts (sketches)
 
 These are short on purpose. If a prompt grows past about 25 lines, treat that as a warning sign.
+
+**seed-world.md**
+> Search the web for evidence of problems that people or businesses already spend money or time working around, in areas these founders could reach: {profiles}. Look at 1–2 star product reviews, forums and Reddit threads describing workarounds, job postings for repetitive manual work, recent regulation changes, business models that work in one country or industry but not yet another, and things that recently became cheap or possible. For each finding, give the pain in one sentence, who has it, the evidence URL, and one seed idea. Only report pain you found evidence for. 20 findings maximum.
 
 **plan.md**
 > Here are three founder profiles and the ideas we already have. Propose 15 search directions for new business ideas that are as *different from each other* as possible. Mix these kinds: specific customer groups these founders can reach, painful workflows in industries they know, recent changes (regulation, tech, cost curves), and business models proven elsewhere that could be ported. One line each. Avoid the directions most people would suggest.
